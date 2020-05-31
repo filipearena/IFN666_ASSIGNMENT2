@@ -5,18 +5,12 @@ import { scaleSize } from '../constants/Layout';
 import { AntDesign } from '@expo/vector-icons';
 import apiGET from "../services/api";
 
-// FixMe: implement other components and functions used in SearchScreen here (don't just put all the JSX in SearchScreen below)
-
-
-
 export default function SearchScreen({ navigation }) {
   const { ServerURL, addToWatchlist } = useStocksContext();
   const [state, setState] = useState({
     allStocks: [],
     filteredList: []
   });
-
-  // can put more code here
 
   const getStocks = (() => {
     apiGET("all")
@@ -133,6 +127,4 @@ const styles = StyleSheet.create({
     backgroundColor: '#222',
     color: '#fff',
   },
-  // FixMe: add styles here ...
-  // use scaleSize(x) to adjust sizes for small/large screens
 });
