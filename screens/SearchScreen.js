@@ -4,6 +4,47 @@ import { useStocksContext } from '../contexts/StocksContext';
 import { scaleSize } from '../constants/Layout';
 import { AntDesign } from '@expo/vector-icons';
 
+
+const SearchComponent = ({ onChangeText }) => {
+  return (
+    <View style={styles.header}>
+      <Text style={styles.fieldInstruction}>Type a company name or stock symbol</Text>
+      <SearchInput onChangeText={onChangeText}></SearchInput>
+    </View>)
+}
+
+const StockList = ({ filteredLit, touchFn, navigation }) => {
+  return (<FlatList keyboardShouldPersistTaps='always'
+    data={filteredLit}
+    renderItem={({ item }) => <StockDetail item={item} touchFn={touchFn} navigation={navigation} />}
+    keyExtractor={(item) => item.symbol}></FlatList>)
+}
+
+const SearchInput = ({ onChangeText }) => {
+  return (<View style={styles.searchSection}>
+    <AntDesign style={styles.searchIcon} name="search1" size={scaleSize(15)} color="white" />
+    <TextInput
+      style={styles.searchInput}
+      placeholder="Search"
+      onChangeText={onChangeText}
+    ></TextInput>
+  </View>)
+}
+
+const StockDetail = ({ item, touchFn, navigation }) => {
+  return (
+    <TouchableHighlight style={styles.stockItem} onPress={() => {
+      touchFn(item.symbol);
+      navigation.navigate('Stocks')
+    }}>
+      <View>
+        <Text style={styles.stockSymbol}>{item.symbol}</Text>
+        <Text style={styles.stockName}>{item.name}</Text>
+      </View>
+    </TouchableHighlight>)
+};
+
+
 export default function SearchScreen({ navigation }) {
   const { ServerURL, addToWatchlist } = useStocksContext();
   const [state, setState] = useState({
@@ -26,7 +67,7 @@ export default function SearchScreen({ navigation }) {
     setState((oldState) => ({ ...oldState, filteredList: stocks }));
   })
 
-  const filterStocks = ((searchText) => {
+  const filterStocks = (searchText) => {
     if (searchText && searchText.length > 0) {
       updateFilteredList(
         state.allStocks.filter((stockItem) => {
@@ -39,20 +80,7 @@ export default function SearchScreen({ navigation }) {
     } else {
       updateFilteredList([]);
     }
-  })
-
-  function StockDetail({ item }) {
-    return (
-      <TouchableHighlight style={styles.stockItem} onPress={() => {
-        addToWatchlist(item.symbol);
-        navigation.navigate('Stocks')
-      }}>
-        <View>
-          <Text style={styles.stockSymbol}>{item.symbol}</Text>
-          <Text style={styles.stockName}>{item.name}</Text>
-        </View>
-      </TouchableHighlight>)
-  };
+  }
 
   useEffect(() => {
     AsyncStorage.getItem('allStocks')
@@ -63,19 +91,9 @@ export default function SearchScreen({ navigation }) {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.fieldInstruction}>Type a company name or stock symbol</Text>
-        <View style={styles.searchSection}>
-          <AntDesign style={styles.searchIcon} name="search1" size={scaleSize(15)} color="white" />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search"
-            onChangeText={filterStocks}
-          ></TextInput>
-        </View>
-      </View>
-      <FlatList data={state.filteredList} renderItem={StockDetail} keyExtractor={(item) => item.symbol}></FlatList>
+    <View>
+      <SearchComponent onChangeText={filterStocks}></SearchComponent>
+      <StockList filteredLit={state.filteredList} touchFn={addToWatchlist} navigation={navigation}></StockList>
     </View>
   )
 }

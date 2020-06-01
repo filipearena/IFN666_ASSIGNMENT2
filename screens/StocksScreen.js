@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, FlatList, TouchableHighlight, AsyncStorage } fr
 import { useStocksContext } from '../contexts/StocksContext';
 import { scaleSize } from '../constants/Layout';
 
-export default function StocksScreen({ route }) {
+export default function StocksScreen() {
   const { ServerURL, watchList, selectStock } = useStocksContext();
   const [state, setState] = useState({
     stocksDetails: {},
