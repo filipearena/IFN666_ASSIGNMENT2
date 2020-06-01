@@ -16,7 +16,7 @@ export const StocksProvider = ({ children }) => {
   );
 };
 
-export const useStocksContext = () => {
+export const useStocksContext = ({ navigation }) => {
   const [state, setState] = useContext(StocksContext);
 
   function addToWatchlist(newSymbol) {
@@ -35,6 +35,7 @@ export const useStocksContext = () => {
       AsyncStorage.setItem('symbols', JSON.stringify([newSymbol]));
     }
     selectStock(newSymbol);
+    navigation.navigate('Stocks')
   }
 
   function selectStock(selectedStock) {
