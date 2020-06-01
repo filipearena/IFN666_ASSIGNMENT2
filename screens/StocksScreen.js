@@ -9,21 +9,20 @@ export default function StocksScreen({ route }) {
   const { ServerURL, watchList, selectStock } = useStocksContext();
   const [state, setState] = useState({
     stocksDetails: {},
-    selectedStock: {},
   });
 
   function stockDeepDetails({ item }) {
     if (state.stocksDetails[item]) {
       return (
         <TouchableHighlight style={styles.stockItem} onPress={() => onSelectStock(item)}>
-          <View>
-            <Text style={styles.stockSymbol}>
-              {state.stocksDetails[item].symbol}
-              {state.stocksDetails[item].close}
-              {getPercentageSinceOpen(state.stocksDetails[item].close, state.stocksDetails[item].open)}</Text>
-            <Text style={styles.stockName}>{state.stocksDetails[item].name}</Text>
+          <View style={styles.stockDetails}>
+            <Text style={styles.stockSymbol}>{state.stocksDetails[item].symbol}</Text>
+            <Text style={styles.stockClose}> {state.stocksDetails[item].close}</Text>
+            <Text style={[styles.stockPercentage,
+            { backgroundColor: getPercentageColor(getPercentageSinceOpen(state.stocksDetails[item].close, state.stocksDetails[item].open)) }]}>
+              {getPercentageSinceOpen(state.stocksDetails[item].close, state.stocksDetails[item].open)}%</Text>
           </View>
-        </TouchableHighlight>)
+        </TouchableHighlight >)
     } else {
       return null
     }
@@ -35,6 +34,14 @@ export default function StocksScreen({ route }) {
 
   function getPercentageSinceOpen(close, open) {
     return ((100 * (close - open)) / open).toFixed(2);
+  }
+
+  function getPercentageColor(percentage) {
+    if (percentage >= 0) {
+      return '#4CD964'
+    } else {
+      return '#f44336'
+    }
   }
 
   useEffect(() => {
@@ -72,22 +79,50 @@ export default function StocksScreen({ route }) {
 }
 
 const styles = StyleSheet.create({
-  textTest: {
-    backgroundColor: '#ddd',
-    color: '#000'
+  container: {
+    display: 'flex',
+  },
+  stockDetails: {
+    justifyContent: 'flex-end',
+    flexDirection: 'row',
+    flex: 1,
+    padding: 10,
+    borderBottomWidth: 1,
+    borderColor: '#222',
   },
   stockSymbol: {
+    flex: 1,
+    lineHeight: scaleSize(38),
+    fontSize: scaleSize(18),
     color: '#fff',
-    backgroundColor: '#ddd'
+  },
+  stockClose: {
+    alignSelf: 'flex-end',
+    lineHeight: scaleSize(38),
+    fontSize: scaleSize(18),
+    color: '#fff',
+  },
+  stockPercentage: {
+    marginLeft: scaleSize(25),
+    height: scaleSize(38),
+    alignSelf: 'flex-end',
+    fontSize: scaleSize(18),
+    width: scaleSize(110),
+    paddingRight: scaleSize(5),
+    paddingTop: scaleSize(5),
+    paddingBottom: scaleSize(5),
+    borderRadius: 10,
+    textAlign: 'right',
+    color: '#fff',
   },
   stockName: {
     color: '#fff',
     backgroundColor: '#ddd'
   },
   footerTable: {
-    // height: 100,
+    flex: 3,
     color: '#000',
+    width: '100%',
     backgroundColor: '#ededed'
   }
-  // use scaleSize(x) to adjust sizes for small/large screens
 });

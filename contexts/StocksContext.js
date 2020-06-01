@@ -43,7 +43,6 @@ export const useStocksContext = () => {
   }
 
   useEffect(() => {
-    // AsyncStorage.clear().then(() => console.log('done'))
     AsyncStorage.getItem('symbols')
       .then(list => JSON.parse(list))
       .then((list) => {
