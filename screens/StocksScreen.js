@@ -71,16 +71,54 @@ export default function StocksScreen({ route }) {
   return (
     <View style={styles.container}>
       <FlatList data={watchList.symbols} renderItem={stockDeepDetails} keyExtractor={(item, index) => item}></FlatList>
-      <View>
-        <Text style={styles.footerTable}>{state.stocksDetails && state.stocksDetails[watchList.selectedStock] ? state.stocksDetails[watchList.selectedStock].name : ''}</Text>
-      </View>
+      {state.stocksDetails && state.stocksDetails[watchList.selectedStock] ?
+        <View style={styles.footerTable}>
+          <Text style={styles.tableHeader}>{state.stocksDetails[watchList.selectedStock].name}</Text>
+          <View style={styles.tableRow}>
+            <View style={styles.innerRow}>
+              <Text style={styles.label}>OPEN</Text>
+              <Text style={styles.value}>{state.stocksDetails[watchList.selectedStock].open.toFixed(2)}</Text>
+            </View>
+            <View style={styles.innerRow}>
+              <Text style={styles.label}>LOW</Text>
+              <Text style={styles.value}>{state.stocksDetails[watchList.selectedStock].low.toFixed(2)}</Text>
+            </View>
+          </View>
+          <View style={styles.tableRow}>
+            <View style={styles.innerRow}>
+              <Text style={styles.label}>CLOSE</Text>
+              <Text style={styles.value}>{state.stocksDetails[watchList.selectedStock].close.toFixed(2)}</Text>
+            </View>
+            <View style={styles.innerRow}>
+              <Text style={styles.label}>HIGH</Text>
+              <Text style={styles.value}>{state.stocksDetails[watchList.selectedStock].high.toFixed(2)}</Text>
+            </View>
+          </View>
+          <View style={styles.tableRow}>
+            <View style={styles.innerRow}>
+              <Text style={styles.label}>VOLUMES</Text>
+              <Text style={styles.value}>{state.stocksDetails[watchList.selectedStock].volumes}</Text>
+              <View style={styles.innerRow}>
+                <Text style={styles.label}></Text>
+                <Text style={styles.value}></Text>
+              </View>
+            </View>
+          </View>
+        </View>
+        : null}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    height: '100%',
     display: 'flex',
+  },
+  innerRow: {
+    flexDirection: 'row',
+    flex: 2,
+    height: scaleSize(25),
   },
   stockDetails: {
     justifyContent: 'flex-end',
@@ -91,6 +129,7 @@ const styles = StyleSheet.create({
     borderColor: '#222',
   },
   stockSymbol: {
+    marginLeft: scaleSize(5),
     flex: 1,
     lineHeight: scaleSize(38),
     fontSize: scaleSize(18),
@@ -115,14 +154,47 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     color: '#fff',
   },
+  tableRow: {
+    paddingLeft: scaleSize(5),
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    backgroundColor: '#222',
+    borderBottomWidth: 0.5,
+    borderColor: '#555',
+  },
   stockName: {
     color: '#fff',
     backgroundColor: '#ddd'
   },
   footerTable: {
-    flex: 3,
+    position: 'absolute',
+    bottom: '0%',
     color: '#000',
     width: '100%',
     backgroundColor: '#ededed'
-  }
+  },
+  tableHeader: {
+    textAlign: 'center',
+    fontSize: scaleSize(18),
+    height: scaleSize(50),
+    lineHeight: scaleSize(40),
+    color: '#fff',
+    backgroundColor: '#222',
+    borderBottomWidth: 0.2,
+    borderColor: '#eee',
+  },
+  label: {
+    lineHeight: scaleSize(20),
+    fontSize: scaleSize(10),
+    flex: 1,
+    color: '#666',
+    backgroundColor: '#222',
+  },
+  value: {
+    fontSize: scaleSize(14),
+    lineHeight: scaleSize(20),
+    color: '#fff',
+    marginRight: scaleSize(10),
+    backgroundColor: '#222',
+  },
 });
