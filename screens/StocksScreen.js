@@ -3,6 +3,7 @@ import { StyleSheet, View, AsyncStorage } from 'react-native';
 import { useStocksContext } from '../contexts/StocksContext';
 import { StocksList } from '../components/StocksList';
 import { StockTable } from '../components/StockTable';
+import { scaleSize } from '../constants/Layout';
 
 
 export default function StocksScreen() {
@@ -37,8 +38,8 @@ export default function StocksScreen() {
 
   return (
     <View style={styles.container}>
-      <StocksList watchList={watchList} state={state} selectStock={selectStock}></StocksList>
-      <StockTable selectedStock={watchList.selectedStock} stocksDetails={state.stocksDetails}></StockTable>
+      <StocksList style={styles.list} watchList={watchList} state={state} selectStock={selectStock}></StocksList>
+      <StockTable style={styles.table} selectedStock={watchList.selectedStock} stocksDetails={state.stocksDetails}></StockTable>
     </View >
   );
 }
@@ -47,4 +48,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  list: {
+    height: scaleSize(80)
+  }
 });

@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     borderColor: '#555',
   },
   footerTable: {
-    position: 'absolute',
+    position: 'relative',
     bottom: '0%',
     color: '#000',
     width: '100%',
