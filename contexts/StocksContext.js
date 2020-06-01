@@ -6,7 +6,7 @@ const StocksContext = React.createContext();
 export const StocksProvider = ({ children }) => {
   const [state, setState] = useState({
     symbols: [],
-    selectedStock: {},
+    selectedStock: '',
   });
 
   return (
@@ -34,6 +34,7 @@ export const useStocksContext = () => {
       setState((oldState) => ({ ...oldState, symbols: [newSymbol] }));
       AsyncStorage.setItem('symbols', JSON.stringify([newSymbol]));
     }
+    selectStock(newSymbol);
   }
 
   function selectStock(selectedStock) {
@@ -42,6 +43,7 @@ export const useStocksContext = () => {
   }
 
   useEffect(() => {
+    // AsyncStorage.clear().then(() => console.log('done'))
     AsyncStorage.getItem('symbols')
       .then(list => JSON.parse(list))
       .then((list) => {

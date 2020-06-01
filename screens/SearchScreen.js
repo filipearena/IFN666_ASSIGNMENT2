@@ -6,7 +6,7 @@ import { AntDesign } from '@expo/vector-icons';
 import apiGET from "../services/api";
 
 export default function SearchScreen({ navigation }) {
-  const { ServerURL, addToWatchlist } = useStocksContext();
+  const { ServerURL, addToWatchlist, selectStock } = useStocksContext();
   const [state, setState] = useState({
     allStocks: [],
     filteredList: []
@@ -44,7 +44,10 @@ export default function SearchScreen({ navigation }) {
 
   function StockDetail({ item }) {
     return (
-      <TouchableHighlight style={styles.stockItem} onPress={() => addToWatchlist(item.symbol)}>
+      <TouchableHighlight style={styles.stockItem} onPress={() => {
+        navigation.navigate('Stocks')
+        addToWatchlist(item.symbol);
+      }}>
         <View>
           <Text style={styles.stockSymbol}>{item.symbol}</Text>
           <Text style={styles.stockName}>{item.name}</Text>

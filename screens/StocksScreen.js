@@ -15,7 +15,7 @@ export default function StocksScreen({ route }) {
   function stockDeepDetails({ item }) {
     if (state.stocksDetails[item]) {
       return (
-        <TouchableHighlight style={styles.stockItem} onPress={() => onSelectStock(state.stocksDetails[item])}>
+        <TouchableHighlight style={styles.stockItem} onPress={() => onSelectStock(item)}>
           <View>
             <Text style={styles.stockSymbol}>
               {state.stocksDetails[item].symbol}
@@ -65,7 +65,7 @@ export default function StocksScreen({ route }) {
     <View style={styles.container}>
       <FlatList data={watchList.symbols} renderItem={stockDeepDetails} keyExtractor={(item, index) => item}></FlatList>
       <View>
-        <Text style={styles.footerTable}>{watchList.selectedStock ? watchList.selectedStock.name : ''}</Text>
+        <Text style={styles.footerTable}>{state.stocksDetails && state.stocksDetails[watchList.selectedStock] ? state.stocksDetails[watchList.selectedStock].name : ''}</Text>
       </View>
     </View>
   );
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ddd'
   },
   footerTable: {
-    height: 100,
+    // height: 100,
     color: '#000',
     backgroundColor: '#ededed'
   }
