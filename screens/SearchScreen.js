@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, TouchableWithoutFeedback, Keyboard, AsyncStorage, TextInput, FlatList, Text } from 'react-native';
+import { StyleSheet, View, TouchableWithoutFeedback, Keyboard, AsyncStorage, TextInput, FlatList, Text, TouchableHighlight } from 'react-native';
 import { useStocksContext } from '../contexts/StocksContext';
 import { scaleSize } from '../constants/Layout';
 import { AntDesign } from '@expo/vector-icons';
@@ -43,12 +43,13 @@ export default function SearchScreen({ navigation }) {
   })
 
   function StockDetail({ item }) {
-    debugger;
     return (
-      <View style={styles.stockItem}>
-        <Text style={styles.stockSymbol}>{item.symbol}</Text>
-        <Text style={styles.stockName}>{item.name}</Text>
-      </View>)
+      <TouchableHighlight style={styles.stockItem} onPress={() => addToWatchlist(item.symbol)}>
+        <View>
+          <Text style={styles.stockSymbol}>{item.symbol}</Text>
+          <Text style={styles.stockName}>{item.name}</Text>
+        </View>
+      </TouchableHighlight>)
   };
 
   useEffect(() => {
@@ -60,7 +61,7 @@ export default function SearchScreen({ navigation }) {
   }, []);
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <TouchableWithoutFeedback>
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.fieldInstruction}>Type a company name or stock symbol</Text>
