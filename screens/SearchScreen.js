@@ -46,6 +46,7 @@ export default function SearchScreen({ navigation }) {
     return (
       <TouchableHighlight style={styles.stockItem} onPress={() => {
         addToWatchlist(item.symbol);
+        Keyboard.dismiss
         navigation.navigate('Stocks')
       }}>
         <View>
@@ -64,22 +65,20 @@ export default function SearchScreen({ navigation }) {
   }, []);
 
   return (
-    <TouchableWithoutFeedback>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.fieldInstruction}>Type a company name or stock symbol</Text>
-          <View style={styles.searchSection}>
-            <AntDesign style={styles.searchIcon} name="search1" size={scaleSize(15)} color="white" />
-            <TextInput
-              style={styles.searchInput}
-              placeholder="Search"
-              onChangeText={filterStocks}
-            ></TextInput>
-          </View>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.fieldInstruction}>Type a company name or stock symbol</Text>
+        <View style={styles.searchSection}>
+          <AntDesign style={styles.searchIcon} name="search1" size={scaleSize(15)} color="white" />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search"
+            onChangeText={filterStocks}
+          ></TextInput>
         </View>
-        <FlatList data={state.filteredList} renderItem={StockDetail} keyExtractor={(item) => item.symbol}></FlatList>
       </View>
-    </TouchableWithoutFeedback>
+      <FlatList data={state.filteredList} renderItem={StockDetail} keyExtractor={(item) => item.symbol}></FlatList>
+    </View>
   )
 }
 

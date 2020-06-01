@@ -11,11 +11,19 @@ export default function StocksScreen({ route }) {
     stocksDetails: {},
   });
 
+  function getBackgroundColor(item) {
+    if (item === watchList.selectedStock) {
+      return '#444'
+    } else {
+      return '#111'
+    }
+  }
+
   function stockDeepDetails({ item }) {
     if (state.stocksDetails[item]) {
       return (
         <TouchableHighlight style={styles.stockItem} onPress={() => onSelectStock(item)}>
-          <View style={styles.stockDetails}>
+          <View style={[styles.stockDetails, { backgroundColor: getBackgroundColor(item) }]}>
             <Text style={styles.stockSymbol}>{state.stocksDetails[item].symbol}</Text>
             <Text style={styles.stockClose}> {state.stocksDetails[item].close}</Text>
             <Text style={[styles.stockPercentage,
