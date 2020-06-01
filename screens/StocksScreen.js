@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, FlatList, TouchableHighlight, AsyncStorage } from 'react-native';
 import { useStocksContext } from '../contexts/StocksContext';
 import { scaleSize } from '../constants/Layout';
-import apiGET from "../services/api";
-
 
 export default function StocksScreen({ route }) {
   const { ServerURL, watchList, selectStock } = useStocksContext();
@@ -61,14 +59,14 @@ export default function StocksScreen({ route }) {
             setState((oldState) => ({ ...oldState, stocksDetails }));
           })
         if (!state.stocksDetails[symbol]) {
-          apiGET(`history?symbol=${symbol}`)
+          fetch(`${ServerURL}/history?symbol=${symbol}`)
+            .then(response => response.json())
             .then((result) => {
               let stockDetailsUpdated = state.stocksDetails;
               stockDetailsUpdated[symbol] = result[0];
               setState((oldState) => ({ ...oldState, stocksDetails: stockDetailsUpdated }));
               AsyncStorage.setItem('stocksDetails', JSON.stringify(stockDetailsUpdated));
-            })
-            .catch((err) => {
+            }).catch((err) => {
               throw new Error('Fetch failed:', err.status);
             });
         }

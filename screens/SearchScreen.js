@@ -3,22 +3,21 @@ import { StyleSheet, View, TouchableWithoutFeedback, Keyboard, AsyncStorage, Tex
 import { useStocksContext } from '../contexts/StocksContext';
 import { scaleSize } from '../constants/Layout';
 import { AntDesign } from '@expo/vector-icons';
-import apiGET from "../services/api";
 
 export default function SearchScreen({ navigation }) {
-  const { ServerURL, addToWatchlist, selectStock } = useStocksContext();
+  const { ServerURL, addToWatchlist } = useStocksContext();
   const [state, setState] = useState({
     allStocks: [],
     filteredList: []
   });
 
   const getStocks = (() => {
-    apiGET("all")
+    fetch(`${ServerURL}/all`)
+      .then(response => response.json())
       .then((result) => {
         AsyncStorage.setItem('allStocks', JSON.stringify(result));
         setState((oldState) => ({ ...oldState, allStocks: result }));
-      })
-      .catch((err) => {
+      }).catch((err) => {
         throw new Error('Fetch failed:', err.status);
       });
   });

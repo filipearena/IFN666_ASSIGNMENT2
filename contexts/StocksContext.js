@@ -55,5 +55,5 @@ export const useStocksContext = () => {
       });
   }, []);
 
-  return { ServerURL: 'http://131.181.190.87:3000', watchList: state, addToWatchlist, selectStock };
+  return { ServerURL: 'http://131.181.190.87:3001', watchList: state, addToWatchlist, selectStock };
 };
