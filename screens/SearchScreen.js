@@ -46,6 +46,7 @@ export default function SearchScreen({ navigation }) {
     return (
       <TouchableHighlight style={styles.stockItem} onPress={() => {
         addToWatchlist(item.symbol);
+        navigation.navigate('Stocks')
       }}>
         <View>
           <Text style={styles.stockSymbol}>{item.symbol}</Text>
