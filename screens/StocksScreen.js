@@ -106,15 +106,16 @@ export default function StocksScreen({ route }) {
             <View style={styles.innerRow}>
               <Text style={styles.label}>VOLUMES</Text>
               <Text style={styles.value}>{state.stocksDetails[watchList.selectedStock].volumes}</Text>
-              <View style={styles.innerRow}>
-                <Text style={styles.label}></Text>
-                <Text style={styles.value}></Text>
-              </View>
+            </View>
+            <View style={styles.innerRow}>
+              <Text style={styles.label}></Text>
+              <Text style={styles.value}></Text>
             </View>
           </View>
         </View>
-        : null}
-    </View>
+        : null
+      }
+    </View >
   );
 }
 
@@ -122,11 +123,6 @@ const styles = StyleSheet.create({
   container: {
     height: '100%',
     display: 'flex',
-  },
-  innerRow: {
-    flexDirection: 'row',
-    flex: 2,
-    height: scaleSize(25),
   },
   stockDetails: {
     justifyContent: 'flex-end',
@@ -169,6 +165,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#222',
     borderBottomWidth: 0.5,
     borderColor: '#555',
+  },
+  innerRow: {
+    flexDirection: 'row',
+    flex: 2,
+    height: scaleSize(25),
   },
   stockName: {
     color: '#fff',
