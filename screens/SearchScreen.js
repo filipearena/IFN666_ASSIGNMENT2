@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, TouchableWithoutFeedback, Keyboard, AsyncStorage, TextInput, FlatList, Text, TouchableHighlight } from 'react-native';
+import { StyleSheet, View, AsyncStorage, TextInput, FlatList, Text, TouchableHighlight } from 'react-native';
 import { useStocksContext } from '../contexts/StocksContext';
 import { scaleSize } from '../constants/Layout';
 import { AntDesign } from '@expo/vector-icons';
 
 
-const SearchComponent = ({ onChangeText }) => {
+const SearchHeader = ({ onChangeText }) => {
   return (
     <View style={styles.header}>
       <Text style={styles.fieldInstruction}>Type a company name or stock symbol</Text>
@@ -92,7 +92,7 @@ export default function SearchScreen({ navigation }) {
 
   return (
     <View>
-      <SearchComponent onChangeText={filterStocks}></SearchComponent>
+      <SearchHeader onChangeText={filterStocks}></SearchHeader>
       <StockList filteredLit={state.filteredList} touchFn={addToWatchlist} navigation={navigation}></StockList>
     </View>
   )

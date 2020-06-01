@@ -1,54 +1,94 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, FlatList, TouchableHighlight, AsyncStorage } from 'react-native';
 import { useStocksContext } from '../contexts/StocksContext';
-import { scaleSize } from '../constants/Layout';
+import { scaleSize, getPercentageSinceOpen, RED_COLOR, GREEN_COLOR, DARK_GREY, MEDIUM_GREY } from '../constants/Layout';
+
+function getSelectedStockBg(item, watchList) {
+  if (item === watchList.selectedStock) {
+    return MEDIUM_GREY
+  } else {
+    return DARK_GREY
+  }
+}
+
+function getPercentageColor(percentage) {
+  if (percentage >= 0) {
+    return GREEN_COLOR;
+  } else {
+    return RED_COLOR;
+  }
+}
+
+const InnerRow = ({ stock, value }) => {
+  return (<View style={styles.innerRow}>
+    <Text style={styles.label}>{value.toUpperCase()}</Text>
+    <Text style={styles.value}>{stock[value].toFixed(2)}</Text>
+  </View>)
+}
+
+const StockTable = ({ stocksDetails, selectedStock }) => {
+  if (selectedStock &&
+    stocksDetails &&
+    stocksDetails[selectedStock]) {
+    return (
+      <View style={styles.footerTable}>
+        <Text style={styles.tableHeader}>{stocksDetails[selectedStock].name}</Text>
+        <View style={styles.tableRow}>
+          <InnerRow stock={stocksDetails[selectedStock]} value={'open'}></InnerRow>
+          <InnerRow stock={stocksDetails[selectedStock]} value={'low'}></InnerRow>
+        </View>
+        <View style={styles.tableRow}>
+          <InnerRow stock={stocksDetails[selectedStock]} value={'close'}></InnerRow>
+          <InnerRow stock={stocksDetails[selectedStock]} value={'high'}></InnerRow>
+        </View>
+        <View style={styles.tableRow}>
+          <InnerRow stock={stocksDetails[selectedStock]} value={'volumes'}></InnerRow>
+          <View style={styles.innerRow}>
+            <Text style={styles.label}></Text>
+            <Text style={styles.value}></Text>
+          </View>
+        </View>
+      </View>
+    )
+  }
+  return null
+}
+
+const StockDeepDetails = ({ item, state, watchList, selectStock }) => {
+  if (state.stocksDetails && state.stocksDetails[item]) {
+    const stockObj = state.stocksDetails[item];
+    return (
+      <TouchableHighlight style={styles.stockItem} onPress={() => selectStock(item)}>
+        <View style={[styles.stockDetails, { backgroundColor: getSelectedStockBg(item, watchList) }]}>
+          <Text style={styles.stockSymbol}>{stockObj.symbol}</Text>
+          <Text style={styles.stockClose}> {stockObj.close}</Text>
+          <Text style={[styles.stockPercentage,
+          { backgroundColor: getPercentageColor(getPercentageSinceOpen(stockObj.close, stockObj.open)) }]}>
+            {getPercentageSinceOpen(stockObj.close, stockObj.open)}%</Text>
+        </View>
+      </TouchableHighlight >)
+  } else {
+    return null
+  }
+};
+
+const StocksList = ({ watchList, state, selectStock }) => {
+  if (watchList.symbols) {
+    return (
+      <FlatList
+        data={watchList.symbols}
+        renderItem={({ item }) => <StockDeepDetails item={item} selectStock={selectStock} state={state} watchList={watchList} />}
+        keyExtractor={(item, index) => item}>
+      </FlatList>
+    )
+  }
+}
 
 export default function StocksScreen() {
   const { ServerURL, watchList, selectStock } = useStocksContext();
   const [state, setState] = useState({
     stocksDetails: {},
   });
-
-  function getBackgroundColor(item) {
-    if (item === watchList.selectedStock) {
-      return '#444'
-    } else {
-      return '#111'
-    }
-  }
-
-  function stockDeepDetails({ item }) {
-    if (state.stocksDetails && state.stocksDetails[item]) {
-      return (
-        <TouchableHighlight style={styles.stockItem} onPress={() => onSelectStock(item)}>
-          <View style={[styles.stockDetails, { backgroundColor: getBackgroundColor(item) }]}>
-            <Text style={styles.stockSymbol}>{state.stocksDetails[item].symbol}</Text>
-            <Text style={styles.stockClose}> {state.stocksDetails[item].close}</Text>
-            <Text style={[styles.stockPercentage,
-            { backgroundColor: getPercentageColor(getPercentageSinceOpen(state.stocksDetails[item].close, state.stocksDetails[item].open)) }]}>
-              {getPercentageSinceOpen(state.stocksDetails[item].close, state.stocksDetails[item].open)}%</Text>
-          </View>
-        </TouchableHighlight >)
-    } else {
-      return null
-    }
-  };
-
-  const onSelectStock = (stockSelected) => {
-    selectStock(stockSelected)
-  }
-
-  function getPercentageSinceOpen(close, open) {
-    return ((100 * (close - open)) / open).toFixed(2);
-  }
-
-  function getPercentageColor(percentage) {
-    if (percentage >= 0) {
-      return '#4CD964'
-    } else {
-      return '#f44336'
-    }
-  }
 
   useEffect(() => {
     if (watchList && watchList.symbols) {
@@ -76,43 +116,8 @@ export default function StocksScreen() {
 
   return (
     <View style={styles.container}>
-      {watchList.symbols ? <FlatList data={watchList.symbols} renderItem={stockDeepDetails} keyExtractor={(item, index) => item}></FlatList> : null}
-      {watchList.selectedStock && state.stocksDetails && state.stocksDetails[watchList.selectedStock] ?
-        <View style={styles.footerTable}>
-          <Text style={styles.tableHeader}>{state.stocksDetails[watchList.selectedStock].name}</Text>
-          <View style={styles.tableRow}>
-            <View style={styles.innerRow}>
-              <Text style={styles.label}>OPEN</Text>
-              <Text style={styles.value}>{state.stocksDetails[watchList.selectedStock].open.toFixed(2)}</Text>
-            </View>
-            <View style={styles.innerRow}>
-              <Text style={styles.label}>LOW</Text>
-              <Text style={styles.value}>{state.stocksDetails[watchList.selectedStock].low.toFixed(2)}</Text>
-            </View>
-          </View>
-          <View style={styles.tableRow}>
-            <View style={styles.innerRow}>
-              <Text style={styles.label}>CLOSE</Text>
-              <Text style={styles.value}>{state.stocksDetails[watchList.selectedStock].close.toFixed(2)}</Text>
-            </View>
-            <View style={styles.innerRow}>
-              <Text style={styles.label}>HIGH</Text>
-              <Text style={styles.value}>{state.stocksDetails[watchList.selectedStock].high.toFixed(2)}</Text>
-            </View>
-          </View>
-          <View style={styles.tableRow}>
-            <View style={styles.innerRow}>
-              <Text style={styles.label}>VOLUMES</Text>
-              <Text style={styles.value}>{state.stocksDetails[watchList.selectedStock].volumes}</Text>
-            </View>
-            <View style={styles.innerRow}>
-              <Text style={styles.label}></Text>
-              <Text style={styles.value}></Text>
-            </View>
-          </View>
-        </View>
-        : null
-      }
+      <StocksList watchList={watchList} state={state} selectStock={selectStock}></StocksList>
+      <StockTable selectedStock={watchList.selectedStock} stocksDetails={state.stocksDetails}></StockTable>
     </View >
   );
 }
